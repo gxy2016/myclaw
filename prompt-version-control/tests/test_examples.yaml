@@ -1,0 +1,96 @@
+# Prompt Version Control 测试用例
+
+test_prompts:
+  - name: 基础变量替换测试
+    prompt_file: prompts/customer_service_reply.yaml
+    test_type: template_render
+    variables:
+      customer_question: 这个产品多少钱？
+      product_name: 智能手表
+    expected_contains:
+      - 客服代表
+      - 智能手表
+      - 价格
+    
+  - name: 条件逻辑测试
+    prompt_file: prompts/content_generator.yaml
+    test_type: template_render
+    variables:
+      topic: AI 发展趋势
+      target_audience: 专业人士
+      tone: 专业严谨
+      length: 长篇
+    expected_contains:
+      - 深度
+      - 专业术语
+    
+  - name: 版本创建测试
+    test_type: version_create
+    prompt_name: test_version_prompt
+    initial_content: "你好，{{name}}！"
+    update_content: "你好，{{name}}！欢迎到来。"
+    expected_versions:
+      - "1.0.0"
+      - "1.1.0"
+    
+  - name: 版本对比测试
+    test_type: version_diff
+    prompt_name: test_version_prompt
+    version_from: "1.0.0"
+    version_to: "1.1.0"
+    expected_change_type: added
+    
+  - name: 版本回滚测试
+    test_type: version_rollback
+    prompt_name: test_version_prompt
+    rollback_to: "1.0.0"
+    expected_new_version: "1.2.0"
+    
+  - name: Prompt 搜索测试
+    test_type: search
+    query: customer
+    tags:
+      - customer-service
+    expected_results_min: 1
+    
+  - name: 测试报告生成
+    test_type: test_report
+    prompt_file: prompts/customer_service_reply.yaml
+    expected_report_fields:
+      - prompt_name
+      - total_tests
+      - average_score
+      - test_results
+
+integration_tests:
+  - name: 完整工作流测试
+    description: 测试从创建到版本管理的完整流程
+    steps:
+      - action: create_prompt
+        params:
+          name: workflow_test
+          content: "测试内容：{{input}}"
+      - action: save_prompt
+        params:
+          path: prompts/workflow_test.yaml
+      - action: create_version
+        params:
+          change_message: 初始版本
+      - action: update_prompt
+        params:
+          content: "测试内容：{{input}}，增加了内容"
+      - action: create_version
+        params:
+          change_message: 增加内容
+      - action: list_versions
+        expected_min: 2
+      - action: diff_versions
+        params:
+          v1: "1.0.0"
+          v2: "1.1.0"
+      - action: rollback
+        params:
+          to_version: "1.0.0"
+      - action: cleanup
+        params:
+          remove: prompts/workflow_test.yaml
