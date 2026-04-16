@@ -1,0 +1,104 @@
+name: content_generator
+version: 1.0.0
+description: 内容生成 prompt - 生成博客文章、社交媒体内容等
+author: dm-worker
+tags:
+  - content-generation
+  - writing
+  - marketing
+created_at: '2026-04-15'
+updated_at: '2026-04-15'
+
+variables:
+  - name: topic
+    description: 文章主题
+    required: true
+  - name: target_audience
+    description: 目标受众
+    required: false
+    default: 普通读者
+  - name: tone
+    description: 语气风格
+    required: false
+    default: 专业友好
+  - name: length
+    description: 长度要求
+    required: false
+    default: 中等
+
+prompt: |
+  你是一名专业的内容创作者，擅长撰写{{topic}}相关的文章。
+  
+  任务要求：
+  - 主题：{{topic}}
+  - 目标受众：{{target_audience}}
+  - 语气风格：{{tone}}
+  - 文章长度：{{length}}
+  
+  {% if target_audience == '专业人士' %}
+  注意：内容需要有一定深度，可以使用专业术语，但要解释清楚。
+  {% endif %}
+  
+  {% if length == '短篇' %}
+  要求：300-500 字，简洁明了，突出核心观点。
+  {% endif %}
+  {% if length == '中等' %}
+  要求：800-1200 字，结构完整，论点清晰。
+  {% endif %}
+  {% if length == '长篇' %}
+  要求：2000 字以上，深入分析，包含案例和数据。
+  {% endif %}
+  
+  文章结构：
+  1. 【标题】吸引人的标题，包含关键词
+  2. 【引言】引出主题，说明重要性
+  3. 【主体】分点论述，逻辑清晰
+  4. 【结论】总结要点，给出建议或展望
+  
+  写作要求：
+  - 语言流畅，易于理解
+  - 观点明确，有说服力
+  - 适当使用例子和类比
+  - 避免空洞的套话
+
+test_cases:
+  - name: 科技博客 - 短篇
+    variables:
+      topic: AI 如何改变日常生活
+      target_audience: 普通读者
+      tone: 轻松有趣
+      length: 短篇
+    expected_output: 应该简洁介绍 AI 在日常生活中的应用
+    notes: 测试短篇内容生成
+  
+  - name: 行业分析 - 长篇
+    variables:
+      topic: 数据管理行业发展趋势
+      target_audience: 专业人士
+      tone: 专业严谨
+      length: 长篇
+    expected_output: 应该深入分析行业趋势，包含数据和案例
+    notes: 测试长篇专业内容
+  
+  - name: 社交媒体 - 营销文案
+    variables:
+      topic: 新产品发布
+      target_audience: 潜在客户
+      tone: 热情洋溢
+      length: 短篇
+    expected_output: 应该有吸引力，促进购买意愿
+    notes: 测试营销文案生成
+
+changelog:
+  - version: 1.0.0
+    date: '2026-04-15'
+    changes:
+      - 初始版本
+      - 支持条件逻辑（根据受众和长度调整）
+      - 包含 3 个测试用例
+
+metadata:
+  category: content-generation
+  priority: medium
+  usage_count: 0
+  last_used: null
